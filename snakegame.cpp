@@ -120,6 +120,8 @@ void moveSnake() {
     }
 }
 
+bool checkWin();
+
 void drawSnakeAndApple() {
     console::clear();
     // 벽 만들기
@@ -145,11 +147,19 @@ void drawSnakeAndApple() {
     string scoreString = "Score: " + to_string(score);
     console::draw(SCORE_POSITION_X - scoreString.length() / 2, SCORE_POSITION_Y, scoreString);
 
-    // game over일때, 재시도 여부 확인
+    // 게임 상태에 따른 메시지 출력
     if (gameOver) {
         console::draw(BOARD_WIDTH / 2 - 5, BOARD_HEIGHT / 2, "You lose!");
         console::draw(BOARD_WIDTH / 2 - 8, BOARD_HEIGHT / 2 + 1, "Try again?(Enter)");
+    } else if (checkWin()) {
+        console::draw(BOARD_WIDTH / 2 - 5, BOARD_HEIGHT / 2, "You win!");
+        console::draw(BOARD_WIDTH / 2 - 8, BOARD_HEIGHT / 2 + 1, "Try again?(Enter)");
     }
+}
+
+bool checkWin() {
+    // 뱀의 길이가 최대 길이에 도달하면 승리
+    return snakeLength == MAX_SNAKE_LENGTH;
 }
 
 int main() {
@@ -172,9 +182,9 @@ int main() {
         for (int i = 0; i < MOVE_DELAY; ++i) {
             console::wait();
         }
-        if (gameOver) {
+        if (gameOver || checkWin()) {
             if (console::key(K_ENTER)) {
-                // 엔터키를 누르면 재시작
+                // 엔터키를 누르면 게임 초기화
                 score = 0;
                 snakeLength = 1;
                 snakeX[0] = BOARD_WIDTH / 2;
@@ -190,3 +200,4 @@ int main() {
 
     return 0;
 }
+
