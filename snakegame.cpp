@@ -7,8 +7,8 @@
 using namespace std;
 using namespace console;
 
-#define BOARD_WIDTH 20
-#define BOARD_HEIGHT 10
+#define BOARD_WIDTH 15
+#define BOARD_HEIGHT 15
 #define MOVE_DELAY 15
 #define WALL_VERTICAL_STRING "┃"
 #define WALL_HORIZONTAL_STRING "━"
