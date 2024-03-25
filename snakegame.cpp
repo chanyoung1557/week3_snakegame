@@ -21,7 +21,7 @@ using namespace console;
 #define APPLE_STRING "●"
 #define SCORE_POSITION_X (BOARD_WIDTH / 2)
 #define SCORE_POSITION_Y (BOARD_HEIGHT + 1)
-#define MAX_SNAKE_LENGTH (BOARD_WIDTH * BOARD_HEIGHT)
+#define MAX_SNAKE_LENGTH ((BOARD_WIDTH - 2) * (BOARD_HEIGHT - 2))
 
 int appleX = 0;
 int appleY = 0;
@@ -45,11 +45,25 @@ bool isSnakeBody(int x, int y) {
 }
 
 void generateApplePosition() {
-    // 사과가 뱀이나 벽에 있지 않게 사과의 무작위 위치를 생성
-    do {
-        appleX = rand() % (BOARD_WIDTH - 2) + 1;
-        appleY = rand() % (BOARD_HEIGHT - 2) + 1;
-    } while (snakeLength < MAX_SNAKE_LENGTH && ((appleX == snakeX[0] && appleY == snakeY[0]) || isSnakeBody(appleX, appleY)));
+    int emptyCellsX[MAX_SNAKE_LENGTH];
+    int emptyCellsY[MAX_SNAKE_LENGTH];
+    int emptyCellsCount = 0;
+
+    // 뱀이 없는 위치를 저장
+    for (int x = 1; x < BOARD_WIDTH - 1; ++x) {
+        for (int y = 1; y < BOARD_HEIGHT - 1; ++y) {
+            if (!isSnakeBody(x, y)) {
+                emptyCellsX[emptyCellsCount] = x;
+                emptyCellsY[emptyCellsCount] = y;
+                emptyCellsCount++;
+            }
+        }
+    }
+
+    // 랜덤한 위치에서 사과 생성
+    int randomIndex = rand() % emptyCellsCount;
+    appleX = emptyCellsX[randomIndex];
+    appleY = emptyCellsY[randomIndex];
 }
 
 void handleInput() {
@@ -120,7 +134,10 @@ void moveSnake() {
     }
 }
 
-bool checkWin();
+bool checkWin() {
+    // 뱀의 길이가 최대 길이에 도달하면 승리
+    return snakeLength == MAX_SNAKE_LENGTH;
+}
 
 void drawSnakeAndApple() {
     console::clear();
@@ -149,17 +166,12 @@ void drawSnakeAndApple() {
 
     // 게임 상태에 따른 메시지 출력
     if (gameOver) {
-        console::draw(BOARD_WIDTH / 2 - 5, BOARD_HEIGHT / 2, "You lose!");
-        console::draw(BOARD_WIDTH / 2 - 8, BOARD_HEIGHT / 2 + 1, "Try again?(Enter)");
+        console::draw(BOARD_WIDTH / 2 - 4, BOARD_HEIGHT / 2, "You lose!");
+        console::draw(BOARD_WIDTH / 2 - 7, BOARD_HEIGHT / 2 + 1, "Try again?(Enter)");
     } else if (checkWin()) {
-        console::draw(BOARD_WIDTH / 2 - 5, BOARD_HEIGHT / 2, "You win!");
-        console::draw(BOARD_WIDTH / 2 - 8, BOARD_HEIGHT / 2 + 1, "Try again?(Enter)");
+        console::draw(BOARD_WIDTH / 2 - 4, BOARD_HEIGHT / 2, "You win!");
+        console::draw(BOARD_WIDTH / 2 - 7, BOARD_HEIGHT / 2 + 1, "Try again?(Enter)");
     }
-}
-
-bool checkWin() {
-    // 뱀의 길이가 최대 길이에 도달하면 승리
-    return snakeLength == MAX_SNAKE_LENGTH;
 }
 
 int main() {
