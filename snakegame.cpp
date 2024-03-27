@@ -67,14 +67,27 @@ void generateApplePosition() {
 }
 
 void handleInput() {
-    if (console::key(K_LEFT) && snakeDirection != RIGHT)
-        snakeDirection = LEFT;
-    if (console::key(K_RIGHT) && snakeDirection != LEFT)
-        snakeDirection = RIGHT;
-    if (console::key(K_UP) && snakeDirection != DOWN)
-        snakeDirection = UP;
-    if (console::key(K_DOWN) && snakeDirection != UP)
-        snakeDirection = DOWN;
+    if(snakeLength == 1){ //처음에는 4방향 다 움직일수 있음
+        if (console::key(K_LEFT))
+            snakeDirection = LEFT;
+        if (console::key(K_RIGHT))
+            snakeDirection = RIGHT;
+        if (console::key(K_UP))
+            snakeDirection = UP;
+        if (console::key(K_DOWN))
+            snakeDirection = DOWN;
+    }
+    else if (snakeLength > 1){ // 몸통이 생기면 몸통방향으로는 못감
+        if (console::key(K_LEFT) && snakeDirection != RIGHT)
+            snakeDirection = LEFT;
+        if (console::key(K_RIGHT) && snakeDirection != LEFT)
+            snakeDirection = RIGHT;
+        if (console::key(K_UP) && snakeDirection != DOWN)
+            snakeDirection = UP;
+        if (console::key(K_DOWN) && snakeDirection != UP)
+            snakeDirection = DOWN;
+    }
+    
 
     // ESC 키가 눌렸는지 확인하여 게임을 종료
     if (console::key(K_ESC)) {
